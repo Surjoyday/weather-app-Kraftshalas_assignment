@@ -84,7 +84,7 @@ function App() {
   if (isLoading) return <Loader bgColor={"bg-black"} />;
 
   return (
-    <div className="flex flex-col justify-center items-center py-7 ">
+    <div className="flex flex-col justify-center items-center py-7 bg-black">
       <div
         className={`w-8/12 ${
           Object.keys(weatherData).length === 0 ? "h-screen" : ""

@@ -15,7 +15,7 @@ async function getWeatherData(resource, searchParams) {
     const data = await res.json();
     return data;
   } catch (error) {
-    // console.error("Failed to fetch weather data:", error);
+    console.error("Failed to fetch weather data:", error);
   }
 }
 
@@ -33,7 +33,7 @@ async function getForecastData(resource, searchParams) {
     const data = await res.json();
     return data;
   } catch (error) {
-    // console.error("Failed to fetch weather data:", error);
+    console.error("Failed to fetch weather data:", error);
   }
 }
 
