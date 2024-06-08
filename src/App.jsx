@@ -32,10 +32,17 @@ function App() {
   // FUNCTION TO GET THE CURRENT LOACTION
   function handleGeoLoaction() {
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((success) => {
-        const { latitude, longitude } = success?.coords;
-        setSerachedQuerry({ lat: latitude, lon: longitude });
-      });
+      navigator.geolocation.getCurrentPosition(
+        (success) => {
+          const { latitude, longitude } = success?.coords;
+          setSerachedQuerry({ lat: latitude, lon: longitude });
+        },
+        (error) => {
+          alert(
+            "Unable to retrieve location. Please try again or enter a city manually."
+          );
+        }
+      );
     }
   }
 
