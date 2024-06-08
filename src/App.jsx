@@ -10,6 +10,7 @@ import Loader from "./components/Loader";
 import lightMode from "./assets/images/light-mode.png";
 import darktMode from "./assets/images/dark-mode.png";
 import useThemeToggler from "./hooks/useThemeToggler";
+import Error from "./components/Error";
 
 function App() {
   const [weatherData, setWeatherData] = useState({});
@@ -17,6 +18,7 @@ function App() {
   const [searchedQuerry, setSerachedQuerry] = useState({ q: "guwahati" });
   const [units, setUnits] = useState({ units: "metric" });
   const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
   const [isDark, setIsDark] = useThemeToggler();
 
   // FUNCTION TO HANDLE INPUT SEARCH
@@ -38,6 +40,7 @@ function App() {
           setSerachedQuerry({ lat: latitude, lon: longitude });
         },
         (error) => {
+          setIsError(true);
           alert(
             "Unable to retrieve location. Please try again or enter a city manually."
           );
@@ -64,6 +67,7 @@ function App() {
   useEffect(
     function () {
       setIsLoading(true);
+      setIsError(false);
 
       async function getData(searchParams) {
         try {
@@ -89,6 +93,7 @@ function App() {
             )
           );
         } catch (error) {
+          setIsError(true);
           console.error("Failed to fetch data:", error);
         } finally {
           setIsLoading(false);
@@ -99,37 +104,45 @@ function App() {
     [searchedQuerry, units]
   );
 
+  if (isLoading) return <Loader />;
+
   return (
     <div className="flex flex-col justify-center items-center pb-7">
-      {isLoading ? (
-        <Loader />
-      ) : (
-        <>
-          {/*  BUTTON FOR TOGGLE */}
-          <button
-            className="p-2 toogle__shadow self-end mr-10 mt-5 border-4 max-sm:p-1 max-sm:border-2 max-sm:mr-4"
-            onClick={() => setIsDark(!isDark)}
-          >
-            <img
-              src={isDark ? lightMode : darktMode}
-              alt={`${isDark ? "light-mode" : "dark-mode"}-img`}
-              className="w-10 max-sm:w-5"
-            />
-          </button>
-          <div
-            className={`w-8/12 ${
-              Object.keys(weatherData).length === 0 ? "h-screen" : ""
-            } max-sm:w-full max-sm:p-2`}
-          >
-            <TopBar onSearch={handleSearch} isDark={isDark} />
-            <section
-              className={`py-6 mt-2 ${handleBgColor()}  bg-opacity-60 rounded-md text-white`}
-            >
-              <ActionFields
-                onSearch={handleSearch}
-                onHandleUnits={handleUnits}
-                onLocationClick={handleGeoLoaction}
-              />
+      {/*  BUTTON FOR TOGGLE */}
+      <button
+        className="p-2 toogle__shadow self-end mr-10 mt-5 border-4 max-sm:p-1 max-sm:border-2 max-sm:mr-4"
+        onClick={() => setIsDark(!isDark)}
+      >
+        <img
+          src={isDark ? lightMode : darktMode}
+          alt={`${isDark ? "light-mode" : "dark-mode"}-img`}
+          className="w-10 max-sm:w-5"
+        />
+      </button>
+      <div
+        className={`w-8/12 ${
+          Object.keys(weatherData).length === 0 ? "h-screen" : ""
+        } max-sm:w-full max-sm:p-2`}
+      >
+        <TopBar onSearch={handleSearch} isDark={isDark} />
+        <section
+          className={`py-6 mt-2 ${handleBgColor()}  bg-opacity-60 rounded-md text-white`}
+        >
+          <ActionFields
+            onSearch={handleSearch}
+            onHandleUnits={handleUnits}
+            onLocationClick={handleGeoLoaction}
+          />
+          {/* SHOW ERROR IF DATA NOT FOUND ELSE SHOW THE DATA  */}
+          {isError ? (
+            <Error>
+              <p>
+                Oops! The city you searched for could not be found. Please
+                double-check the spelling or try a different city
+              </p>
+            </Error>
+          ) : (
+            <>
               {Object.keys(weatherData).length !== 0 && (
                 <>
                   <TimeAndLocation weatherData={weatherData} />
@@ -152,10 +165,10 @@ function App() {
                   />
                 </>
               )}
-            </section>
-          </div>
-        </>
-      )}
+            </>
+          )}
+        </section>
+      </div>
     </div>
   );
 }
