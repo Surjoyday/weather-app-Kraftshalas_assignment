@@ -7,6 +7,9 @@ import TimeAndLocation from "./components/TimeAndLocation";
 import Forecast from "./components/Forecast";
 import ActionFields from "./components/ActionFields";
 import Loader from "./components/Loader";
+import lightMode from "./assets/images/light-mode.png";
+import darktMode from "./assets/images/dark-mode.png";
+import useThemeToggler from "./hooks/useThemeToggler";
 
 function App() {
   const [weatherData, setWeatherData] = useState({});
@@ -14,6 +17,7 @@ function App() {
   const [searchedQuerry, setSerachedQuerry] = useState({ q: "guwahati" });
   const [units, setUnits] = useState({ units: "metric" });
   const [isLoading, setIsLoading] = useState(false);
+  const [isDark, setIsDark] = useThemeToggler();
 
   // console.log(weatherData);
   function handleSearch(input) {
@@ -41,9 +45,10 @@ function App() {
     const threshold = units.units === "metric" ? 20 : 60;
     // console.log(weatherData?.temp);
     // console.log(+weatherData?.temp <= threshold);
-    if (weatherData?.temp <= threshold) return "bg-sky-700";
+    if (weatherData?.temp <= threshold)
+      return "bg-gradient-to-r from-sky-300 via-sky-400 to-sky-500";
 
-    return "bg-orange-600";
+    return "bg-gradient-to-r from-orange-300 via-orange-400 to-orange-500";
   }
 
   useEffect(
@@ -81,45 +86,64 @@ function App() {
     [searchedQuerry, units]
   );
 
-  if (isLoading) return <Loader bgColor={"bg-black"} />;
-
   return (
-    <div className="flex flex-col justify-center items-center py-7 bg-black">
-      <div
-        className={`w-8/12 ${
-          Object.keys(weatherData).length === 0 ? "h-screen" : ""
-        } max-sm:w-full max-sm:p-2`}
-      >
-        <TopBar onSearch={handleSearch} />
-        <div
-          className={`py-6 mt-2 ${handleBgColor()}  bg-opacity-50 rounded-md text-white`}
-        >
-          <ActionFields
-            onSearch={handleSearch}
-            onHandleUnits={handleUnits}
-            onLocationClick={handleGeoLoaction}
-          />
-          {Object.keys(weatherData).length !== 0 && (
-            <>
-              <TimeAndLocation weatherData={weatherData} />
+    <div className="flex flex-col justify-center items-center pb-7">
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <>
+          <button
+            className="p-2 toogle__shadow self-end mr-10 mt-5 border-4"
+            onClick={() => {
+              setIsDark((d) => !d);
+            }}
+          >
+            <img
+              src={isDark ? lightMode : darktMode}
+              alt={`${isDark ? "light-mode" : "dark-mode"}-img`}
+              className="w-10"
+            />
+          </button>
+          <div
+            className={`w-8/12 ${
+              Object.keys(weatherData).length === 0 ? "h-screen" : ""
+            } max-sm:w-full max-sm:p-2`}
+          >
+            <TopBar onSearch={handleSearch} isDark={isDark} />
+            <section
+              className={`py-6 mt-2 ${handleBgColor()}  bg-opacity-60 rounded-md text-white`}
+            >
+              <ActionFields
+                onSearch={handleSearch}
+                onHandleUnits={handleUnits}
+                onLocationClick={handleGeoLoaction}
+              />
+              {Object.keys(weatherData).length !== 0 && (
+                <>
+                  <TimeAndLocation weatherData={weatherData} />
 
-              <TempAndDetails weatherData={weatherData} units={units.units} />
-            </>
-          )}
-          {Object.keys(forecastData).length !== 0 && (
-            <>
-              <Forecast
-                title={"3 hour step forecast"}
-                forecastData={forecastData.hourlyData}
-              />
-              <Forecast
-                title={"Daily forecast"}
-                forecastData={forecastData.dailyData}
-              />
-            </>
-          )}
-        </div>
-      </div>
+                  <TempAndDetails
+                    weatherData={weatherData}
+                    units={units.units}
+                  />
+                </>
+              )}
+              {Object.keys(forecastData).length !== 0 && (
+                <>
+                  <Forecast
+                    title={"3 hour step forecast"}
+                    forecastData={forecastData.hourlyData}
+                  />
+                  <Forecast
+                    title={"Daily forecast"}
+                    forecastData={forecastData.dailyData}
+                  />
+                </>
+              )}
+            </section>
+          </div>
+        </>
+      )}
     </div>
   );
 }
