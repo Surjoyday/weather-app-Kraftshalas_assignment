@@ -10,8 +10,10 @@ function TopBar({ onSearch, isDark }) {
     <nav className="flex items-center justify-around max-sm:justify-center max-sm:gap-3">
       {cities.map((city) => (
         <button
-          className={`text-lg max-sm:text-sm font-semibold hover:bg-gray-700/50 p-1.5 rounded-md transition ease-in cursor-pointer ${
-            isDark ? "text-white" : "text-black"
+          className={`text-lg max-sm:text-sm font-semibold  p-1.5 rounded-md transition ease-in cursor-pointer ${
+            isDark
+              ? "text-white hover:bg-slate-400/50"
+              : "text-black hover:bg-gray-700/50"
           }`}
           key={city.id}
           onClick={() => onSearch(city.cityName)}

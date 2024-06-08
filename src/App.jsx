@@ -19,15 +19,17 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [isDark, setIsDark] = useThemeToggler();
 
-  // console.log(weatherData);
+  // FUNCTION TO HANDLE INPUT SEARCH
   function handleSearch(input) {
     setSerachedQuerry({ q: input.toLowerCase() });
   }
 
+  // FUNCTION TO CHANGE THE UNITS FROM CELSIUS TO FARENHEIT AND VICE-VERSA
   function handleUnits(value) {
     setUnits({ units: value });
   }
 
+  // FUNCTION TO GET THE CURRENT LOACTION
   function handleGeoLoaction() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((success) => {
@@ -37,6 +39,7 @@ function App() {
     }
   }
 
+  // FUNCTION TO HANDLE THE WEATHER DATA BG BASED ON TEMP
   function handleBgColor() {
     if (Object.keys(weatherData).length === 0) {
       return "bg-black";
@@ -54,14 +57,17 @@ function App() {
   useEffect(
     function () {
       setIsLoading(true);
-      async function fetchWeatherData(searchParams) {
+
+      async function getData(searchParams) {
         try {
+          // TO GET WEATHER DATA
           const dataOfWeather = await getWeatherData("weather", {
             ...searchedQuerry,
             ...units,
           });
           setWeatherData(formatWeatherData(dataOfWeather));
 
+          // TO GET FOREACAST DATA
           const dataOfForecast = await getForecastData("forecast", {
             lat: formatWeatherData(dataOfWeather)?.lat,
             lon: formatWeatherData(dataOfWeather)?.lon,
@@ -81,7 +87,7 @@ function App() {
           setIsLoading(false);
         }
       }
-      fetchWeatherData();
+      getData();
     },
     [searchedQuerry, units]
   );
@@ -92,14 +98,15 @@ function App() {
         <Loader />
       ) : (
         <>
+          {/*  BUTTON FOR TOGGLE */}
           <button
-            className="p-2 toogle__shadow self-end mr-10 mt-5 border-4"
+            className="p-2 toogle__shadow self-end mr-10 mt-5 border-4 max-sm:p-1 max-sm:border-2 max-sm:mr-4"
             onClick={() => setIsDark(!isDark)}
           >
             <img
               src={isDark ? lightMode : darktMode}
               alt={`${isDark ? "light-mode" : "dark-mode"}-img`}
-              className="w-10"
+              className="w-10 max-sm:w-5"
             />
           </button>
           <div

@@ -12,7 +12,7 @@ function ActionFields({ onSearch, onHandleUnits, onLocationClick }) {
 
   return (
     <div className="flex justify-evenly flex-wrap max-sm:text-sm">
-      <div className="flex items-center justify-around gap-6 my-6">
+      <div className="flex items-center justify-around gap-6 my-6 max-sm:px-4">
         <input
           type="text"
           placeholder="Search by cities..."
