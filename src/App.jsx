@@ -10,7 +10,7 @@ import Loader from "./components/Loader";
 import lightMode from "./assets/images/light-mode.png";
 import darktMode from "./assets/images/dark-mode.png";
 import useThemeToggler from "./hooks/useThemeToggler";
-import Error from "./components/Error";
+import ErrorMsg from "./components/ErrorMsg";
 
 function App() {
   const [weatherData, setWeatherData] = useState({});
@@ -18,7 +18,7 @@ function App() {
   const [searchedQuerry, setSerachedQuerry] = useState({ q: "guwahati" });
   const [units, setUnits] = useState({ units: "metric" });
   const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState(false);
+  const [error, setError] = useState(null);
   const [isDark, setIsDark] = useThemeToggler();
 
   // FUNCTION TO HANDLE INPUT SEARCH
@@ -40,11 +40,14 @@ function App() {
           setSerachedQuerry({ lat: latitude, lon: longitude });
         },
         (error) => {
-          setIsError(true);
-          alert(
-            "Unable to retrieve location. Please try again or enter a city manually."
+          setError(
+            "Unable to retrieve current weather. Please enable location services for accurate data."
           );
         }
+      );
+    } else {
+      setError(
+        "Geolocation is not supported by your browser. Please manually enter your location."
       );
     }
   }
@@ -67,7 +70,7 @@ function App() {
   useEffect(
     function () {
       setIsLoading(true);
-      setIsError(false);
+      setError(null);
 
       async function getData(searchParams) {
         try {
@@ -93,7 +96,10 @@ function App() {
             )
           );
         } catch (error) {
-          setIsError(true);
+          setError(
+            "Oops! The city you searched for could not be found. Please double-check the spelling or try a different city"
+          );
+
           console.error("Failed to fetch data:", error);
         } finally {
           setIsLoading(false);
@@ -133,38 +139,28 @@ function App() {
             onHandleUnits={handleUnits}
             onLocationClick={handleGeoLoaction}
           />
-          {/* SHOW ERROR IF DATA NOT FOUND ELSE SHOW THE DATA  */}
-          {isError ? (
-            <Error>
-              <p>
-                Oops! The city you searched for could not be found. Please
-                double-check the spelling or try a different city
-              </p>
-            </Error>
-          ) : (
+          {/* SHOW ERROR MESSAGE IF DATA NOT FOUND OR LOACTION NOT ALLOWED ELSE SHOW THE DATA  */}
+          {error && (
+            <ErrorMsg>
+              <p>{error}</p>
+            </ErrorMsg>
+          )}
+          {!error && Object.keys(weatherData).length !== 0 && (
             <>
-              {Object.keys(weatherData).length !== 0 && (
-                <>
-                  <TimeAndLocation weatherData={weatherData} />
-
-                  <TempAndDetails
-                    weatherData={weatherData}
-                    units={units.units}
-                  />
-                </>
-              )}
-              {Object.keys(forecastData).length !== 0 && (
-                <>
-                  <Forecast
-                    title={"3 hour step forecast"}
-                    forecastData={forecastData.hourlyData}
-                  />
-                  <Forecast
-                    title={"Daily forecast"}
-                    forecastData={forecastData.dailyData}
-                  />
-                </>
-              )}
+              <TimeAndLocation weatherData={weatherData} />
+              <TempAndDetails weatherData={weatherData} units={units.units} />
+            </>
+          )}
+          {!error && Object.keys(forecastData).length !== 0 && (
+            <>
+              <Forecast
+                title={"3 hour step forecast"}
+                forecastData={forecastData.hourlyData}
+              />
+              <Forecast
+                title={"Daily forecast"}
+                forecastData={forecastData.dailyData}
+              />
             </>
           )}
         </section>
