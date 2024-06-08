@@ -94,9 +94,7 @@ function App() {
         <>
           <button
             className="p-2 toogle__shadow self-end mr-10 mt-5 border-4"
-            onClick={() => {
-              setIsDark((d) => !d);
-            }}
+            onClick={() => setIsDark(!isDark)}
           >
             <img
               src={isDark ? lightMode : darktMode}
