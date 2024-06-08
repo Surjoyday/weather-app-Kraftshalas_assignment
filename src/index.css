@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+  transition: all 0.5s;
+  background-color: azure;
+}
+
 /* TOOK HELP FROM -> https://dev.to/afif/i-made-100-css-loaders-for-your-next-project-4eje */
 .pulsing-7 {
   width: 108px;

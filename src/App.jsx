@@ -23,7 +23,7 @@ function App() {
 
   // FUNCTION TO HANDLE INPUT SEARCH
   function handleSearch(input) {
-    setSerachedQuerry({ q: input.toLowerCase() });
+    setSerachedQuerry({ q: input.toLowerCase().trim() });
   }
 
   // FUNCTION TO CHANGE THE UNITS FROM CELSIUS TO FARENHEIT AND VICE-VERSA
@@ -122,7 +122,7 @@ function App() {
         <img
           src={isDark ? lightMode : darktMode}
           alt={`${isDark ? "light-mode" : "dark-mode"}-img`}
-          className="w-10 max-sm:w-5"
+          className="w-10 max-sm:w-5 transition-all"
         />
       </button>
       <div
