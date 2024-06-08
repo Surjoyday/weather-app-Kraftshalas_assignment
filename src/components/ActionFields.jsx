@@ -40,7 +40,7 @@ function ActionFields({ onSearch, onHandleUnits, onLocationClick }) {
           />
         </div>
       </div>
-      <div className="flex items-center justify-center gap-.5">
+      <div className="flex items-center justify-center gap-.5 p-2">
         <button
           className="text-lg font-medium hover:scale-110 transition ease-in-out"
           onClick={() => {
