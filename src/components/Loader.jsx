@@ -1,8 +1,8 @@
 import "../index.css";
 
-function Loader({ bgColor }) {
+function Loader() {
   return (
-    <aside className={`flex items-center justify-center h-screen ${bgColor}`}>
+    <aside className={`flex items-center justify-center h-screen `}>
       <div className="pulsing-7"></div>
     </aside>
   );

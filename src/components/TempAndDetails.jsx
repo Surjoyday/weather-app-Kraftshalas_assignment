@@ -12,7 +12,9 @@ function TempAndDetails({ weatherData, units }) {
       Icon: DeviceThermostatTwoToneIcon,
       weatherCondition: "Feels like",
 
-      value: weatherData.main,
+      value: `${weatherData.feels_like.toFixed(0)} ${
+        units === "metric" ? "℃" : "℉"
+      }`,
     },
     {
       id: 2,
